@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Materiais</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <a href="index.html">Home</a>
+        <a href="index.html">Cadastrar Usuário</a>
+        <a href="login.html">Login</a>
+        <a href="#" id="linkLogout" style="display:none;">Sair</a>
+    </nav>
+    <div class="container">
+        <h2>Lista de Materiais</h2>
+        <table id="materiais-table">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Descrição</th>
+                    <th>Quantidade</th>
+                </tr>
+            </thead>
+            <tbody id="materiais-list">
+                <!-- Os dados serão inseridos aqui via JavaScript -->
+            </tbody>
+        </table>
+        <br><button class="btn"><a href="index.html" class="link">Voltar</a></button>
+
+        <!-- Elemento de notificação -->
+        <div id="notification" class="notification hidden"></div>
+
+        <!-- Caixa de confirmação -->
+        <div id="confirm-box" class="confirm-box hidden">
+            <p id="confirm-message"></p>
+            <button onclick="confirmAction(true)">Sim</button>
+            <button onclick="confirmAction(false)">Não</button>
+
+        </div>
+        <script src="script.js"></script>
+</body>
+
+</html>

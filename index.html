@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <title>Cadastro de Usuário</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <a href="index.html">Home</a>
+    <a href="index.html">Cadastrar Usuário</a>
+    <a href="login.html">Login</a>
+    <a href="#" id="linkLogout" style="display:none;">Sair</a>
+  </nav>
+  <div class="container">
+    <h1>Cadastro de Usuário</h1>
+
+    <form id="formCadastro" class="form-container">
+      <input type="text" id="nome" placeholder="Nome" required />
+      <input type="email" id="email" placeholder="Email" required />
+      <input type="password" id="senha" placeholder="Senha" required />
+      <button type="submit" class="btn">Cadastrar</button>
+    </form>
+
+    <!-- Link para voltar -->
+    <a href="index.html" class="link">Voltar</a>
+  </div>
+
+  <script>
+    document.getElementById("formCadastro").addEventListener("submit", async function(e) {
+      e.preventDefault();
+
+      const nome = document.getElementById("nome").value;
+      const email = document.getElementById("email").value;
+      const senha = document.getElementById("senha").value;
+
+      try {
+        const response = await fetch("http://localhost:5008/Usuario/registrar", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ nome, email, senhaHash: senha })
+        });
+
+        const resultado = await response.text();
+
+        if (response.ok) {
+          alert("✅ " + resultado);
+          window.location.href = "login.html";
+        } else {
+          alert("❌ Erro: " + resultado);
+        }
+      } catch (error) {
+        alert("❌ Erro de conexão: " + error.message);
+      }
+    });
+  </script>
+</body>
+</html>

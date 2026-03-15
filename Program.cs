@@ -2,6 +2,12 @@
 using CadastroMateriais.Data;
 using Microsoft.EntityFrameworkCore;
 
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+builder.Services.AddDbContext<DataContext>(options =>
+    options.UseMySql(connectionString,
+    new MySqlServerVersion(new Version(8,0,27))));
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Configurar o banco de dados MySQL

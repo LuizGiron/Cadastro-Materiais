@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Login</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <nav class="navbar">
+    <a href="index.html">Home</a>
+    <a href="index.html">Cadastrar Usuário</a>
+    <a href="login.html">Login</a>
+    <a href="#" id="linkLogout" style="display:none;">Sair</a>
+  </nav>
+  <div class="container">
+    <h1>Login</h1>
+    <form id="formLogin" class="form-container">
+      <input type="email" id="email" placeholder="Email" required />
+      <input type="password" id="senha" placeholder="Senha" required />
+      <button type="submit" class="btn">Entrar</button>
+    </form>
+    <!-- Link "Esqueci a senha?" -->
+    <a href="#" id="linkEsqueciSenha" style="margin-top: 10px; text-align:left; display:block;">Esqueci a senha?</a>
+  </div>
+
+  <!-- Modal escondido -->
+  <div id="modalEsqueciSenha" class="modal hidden">
+    <div class="modal-content">
+      <h2>Recuperar senha</h2>
+      <p>Informe seu e-mail para enviar o link de recuperação:</p>
+      <input type="email" id="emailEsqueci" placeholder="Seu e-mail" required style="width:100%; padding:8px;" />
+      <div style="margin-top:1rem; display:flex; justify-content:flex-end; gap:10px;">
+        <button id="btnEnviarEsqueciSenha" class="btn">Enviar link</button>
+        <button id="btnFechar" class="btn" style="background-color:#aaa;">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("formLogin").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const email = document.getElementById("email").value;
+      const senha = document.getElementById("senha").value;
+
+      try {
+        const response = await fetch("http://localhost:5008/Usuario/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, senhaHash: senha })
+        });
+
+        //const resultado = await response.text();
+
+        if (response.ok) {
+          const resultado = await response.json(); // agora esperando JSON
+          /*alert("✅ " + resultado);
+          window.location.href = "cadastromaterial.html"; // Redireciona para a tela principal*/
+          alert(`✅ ${resultado.message}`);
+          localStorage.setItem('usuarioId', resultado.idUsuario); // salva o ID do usuário logado
+          window.location.href = "cadastromaterial.html";
+        } else {
+          //alert("❌ " + resultado); // Ex.: "Email ou senha inválidos."
+          const erro = await response.text();
+          alert(`❌ ${erro}`); // Mensagem de erro
+        }
+      } catch (error) {
+        //alert("❌ Erro de conexão: " + error.message);
+        alert(`❌ Erro de conexão: ${error.message}`);
+      }
+    });
+    document.addEventListener('DOMContentLoaded', () => {
+      const linkEsqueciSenha = document.getElementById('linkEsqueciSenha')
+      const modalEsqueciSenha = document.getElementById('modalEsqueciSenha')
+      const btnFechar = document.getElementById('btnFechar')
+      const btnEnviarEsqueciSenha = document.getElementById('btnEnviarEsqueciSenha')
+      const emailInput = document.getElementById('emailEsqueci')
+
+      // Abrir modal
+      linkEsqueciSenha.addEventListener('click', (e) => {
+        e.preventDefault()
+        modalEsqueciSenha.classList.remove('hidden')
+        modalEsqueciSenha.classList.add('show')
+        document.body.classList.add('modal-open')
+      })
+
+      // Fechar modal
+      btnFechar.addEventListener('click', () => {
+        modalEsqueciSenha.classList.remove('show')
+        modalEsqueciSenha.classList.add('hidden')
+        document.body.classList.remove('modal-open')
+      })
+
+      // Enviar link
+      btnEnviarEsqueciSenha.addEventListener('click', async () => {
+        const email = emailInput.value.trim()
+        if (!email) {
+          return alert('Digite o e-mail')
+        }
+        try {
+          const resp = await fetch('http://localhost:5008/Usuario/esqueci-senha', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email })
+          })
+          if (resp.ok) {
+            alert('Se o e-mail existir, um link foi enviado!')
+          } else {
+            alert('Erro ao enviar o link')
+          }
+        } catch (err) {
+          alert('Erro de conexão: ' + err.message)
+        }
+        modalEsqueciSenha.classList.remove('show')
+        modalEsqueciSenha.classList.add('hidden')
+        document.body.classList.remove('modal-open')
+      })
+    })
+  </script>
+
+</body>
+
+</html>
